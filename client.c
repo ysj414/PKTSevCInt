@@ -36,24 +36,24 @@ int main(int argc, char *argv[])
     while(1)
     {
         fputs("Input message(Q to quit): ", stdout);
-        fgets(message, BUF_SIZE, stdin);
+        fgets(msg, BUF_SIZE, stdin);
 
-        if(!strcmp(message,"q\n") || !strcmp(message,"Q\n"))
+        if(!strcmp(msg,"q\n") || !strcmp(msg,"Q\n"))
             break;
 
-        str_len=write(sock, message, strlen(message));
+        str_len=write(sock, msg, strlen(msg));
 
         recv_len=0;
         while(recv_len<str_len)
         {
-            recv_cnt=read(sock, &message[recv_len], BUF_SIZE-1);
+            recv_cnt=read(sock, &msg[recv_len], BUF_SIZE-1);
             if(recv_cnt==-1)
                 error_handling("read() error!");
             recv_len+=recv_cnt;
         }
 
-        message[recv_len]=0;
-        printf("Message from server: %s", message);
+        msg[recv_len]=0;
+        printf("Message from server: %s", msg);
     }
 
     close(sock);
