@@ -40,16 +40,13 @@ int main(int argc, char* argv[])
 		error_handling("listen() error\n");
 
 
-	for(i = 0; i < 5; i++)
-	{
 		c_sock = accept(serv_sock, (struct sockaddr *)&clnt_adr, &clnt_adr_sz);
 		if(c_sock == -1)
-			error_handling("accept() error");
+			error_handling("accept() error\n");
 		while((str_len = read(c_sock, message, BUF_SIZE)) != 0)
 			write(c_sock, message, str_len);
 
 		close(c_sock);
-	}
 
 	close(serv_sock);
 
