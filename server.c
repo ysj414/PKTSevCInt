@@ -7,16 +7,18 @@
 
 #define BUF_SIZE	32
 
-int main(void)
+void error_handling(char *message);
+
+int main(int argc, char* argv[])
 {
-	int serv_sock, clnt_sock;
-	char messgae[BUF_SIZE];
+	int serv_sock, c_sock;
+	char message[BUF_SIZE];
 	int str_len, i;
 	char clnt_ip[BUF_SIZE];
 
 	struct sockaddr_in serv_adr;
 	struct sockaddr_in clnt_adr;
-	socklen_t clnta_adr_sz;
+	socklen_t clnt_adr_sz;
 
 
 	serv_sock = socket(PF_INET, SOCK_STREAM, 0);
@@ -28,6 +30,9 @@ int main(void)
 	serv_adr.sin_addr.s_addr = htonl(INADDR_ANY); /* INADDR_ANY : 서버의 IP를 자동으로 찾아서 대입해주는 함수 */
 	serv_adr.sin_port = htons(atoi(argv[1]));
 
+	printf("Hello! I'am Server\n");
+	printf("My IP:%d, Port: %s\n",INADDR_ANY,argv[1]);
+
 	if(bind(serv_sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1 )
 		error_handling("bind() error\n");
 
@@ -37,11 +42,23 @@ int main(void)
 
 	for(i = 0; i < 5; i++)
 	{
-		clnt_sock = accept(serv_sock, (struct sockaddr *)&clnt_adr, &clnt_adr_sz);
-		if(clnt_sock == -1)
+		c_sock = accept(serv_sock, (struct sockaddr *)&clnt_adr, &clnt_adr_sz);
+		if(c_sock == -1)
 			error_handling("accept() error");
+		while((str_len = read(c_sock, message, BUF_SIZE)) != 0)
+			write(c_sock, message, str_len);
 
+		close(c_sock);
 	}
 
+	close(serv_sock);
+
 	return 0;
+}
+
+void error_handling(char *message)
+{
+	fputs(message, stderr);
+	fputs('\n',stderr);
+	exit(1);
 }
