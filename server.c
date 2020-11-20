@@ -5,7 +5,6 @@
 #include<arpa/inet.h>
 #include<sys/socket.h>
 
-
 #define BUF_SIZE	32
 
 int main(void)

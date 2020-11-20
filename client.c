@@ -9,9 +9,6 @@
 void error_handling(char *message);
 
 
-
-
-
 int main(int argc, char *argv[])
 {
 
