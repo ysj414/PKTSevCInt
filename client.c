@@ -6,6 +6,7 @@
 #include<sys/socket.h>
 
 #define BUF_SIZE 1024
+#define CAL	1
 void error_handling(char *message);
 
 
@@ -16,7 +17,12 @@ int main(int argc, char *argv[])
 	char msg[BUF_SIZE];
 	int str_len, recv_len, recv_cnt;
 	struct sockaddr_in serv_adr;
-
+#ifdef CAL
+	int count=0;
+	int i=0;
+	int operand;
+	char operator;
+#endif
 	
 	sock = socket(PF_INET, SOCK_STREAM, 0);
 	if(sock == -1)
@@ -41,7 +47,27 @@ int main(int argc, char *argv[])
         if(!strcmp(msg,"q\n") || !strcmp(msg,"Q\n"))
             break;
 
-        str_len=write(sock, msg, strlen(msg));
+#ifdef CAL
+	printf("Operand Count: ");
+	scanf("%d",&count);
+	if(count < 0)
+	{
+		printf("Wrong Input\n");
+		continue;
+	}
+	for(i = 0; i< count+1; i++)
+	{
+		printf("Operand %d: ",i+1);
+		scanf("%d",&operand);
+		//add to exception
+		msg[i]=(char)operand;
+	}
+	printf("Operator: ");
+	scanf("%c",&operator);
+	//add to exception handling
+	msg[count] = operator;
+#endif
+    str_len=write(sock, msg, strlen(msg));
 
         recv_len=0;
         while(recv_len<str_len)
@@ -53,7 +79,12 @@ int main(int argc, char *argv[])
         }
 
         msg[recv_len]=0;
+#ifdef CAL
+        printf("Operation result: %d\n",atoi(msg));
+#else
         printf("Message from server: %s", msg);
+#endif
+
     }
 
     close(sock);
