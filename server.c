@@ -7,16 +7,21 @@
 #include<netinet/in.h>
 
 #define BUF_SIZE	1024
-
+#define CAL	1
 void error_handling(char *message);
 
 int main(int argc, char* argv[])
 {
 	int serv_sock, c_sock;
 	char message[BUF_SIZE];
+	char message_to[BUF_SIZE];
 	char buf[64];
 	int str_len, i;
-
+#ifdef CAL
+	int result=0;
+	int oper=0;
+	int len=0;
+#endif
 	struct sockaddr_in serv_adr;
 	struct sockaddr_in c_adr;
 	socklen_t c_adr_sz;
@@ -53,6 +58,7 @@ int main(int argc, char* argv[])
 		error_handling("listen() error\n");
 	while(1)
 	{
+	printf("Server wait Client connection......\n");	
 	c_sock = accept(serv_sock, (struct sockaddr *)&c_adr, &c_adr_sz);
 
 	if(c_sock == -1)
@@ -63,16 +69,45 @@ int main(int argc, char* argv[])
 	inet_ntop(AF_INET,&c_adr.sin_addr,buf,INET_ADDRSTRLEN);
 	printf("Client has Connected!!\n");
 	printf("Client Info : IP: %s\n",buf);
-
+#ifdef CAL
+	while( (str_len = read(c_sock, message, BUF_SIZE)) != 0)
+	{
+	  result = (int)message[0];
+	  len = strlen(message);
+//	  printf("%d %d %d %d\n",result, (int)message[0],(int)message[1],(int)message[2]);
+	  switch(message[len])
+	  {
+		case '+':
+		for(i = 1; i<len; i++)
+			result+=(int)message[i];
+		break;
+		case '-':
+		for(i = 1; i<len; i++)
+			result-=(int)message[i];
+		break;
+		case '*':
+		for(i = 1; i<len; i++)
+			result*=(int)message[i];
+		default:
+		break;
+	  }
+	  message_to[0] = (int)result;
+  	  write(c_sock,message_to,str_len);
+	  memset(message,0,sizeof(message));	 
+	  memset(message_to,0,sizeof(message_to));
+	  printf("The Result is %d.\n",result); 
+	}
+#else
 	while( (str_len = read(c_sock, message, BUF_SIZE)) != 0 )
 	{
 			printf("Server received data: %s",message);
 			printf("Transfer this data toward client again.\n");
-			write(c_sock, message, str_len);
+			write(c_sock, message_to, str_len);
+			memset(message_to,0,sizeof(message_to));
 			memset(message,0,sizeof(message));
 	}
+#endif
 	printf("Client has closed the connection\n");
-	printf("Server wait Client connection......\n");	
 	close(c_sock);
 	}
 	close(serv_sock);
