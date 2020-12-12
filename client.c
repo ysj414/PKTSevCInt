@@ -41,27 +41,30 @@ int main(int argc, char *argv[])
 
     while(1)
     {
-        fputs("Input message(Q to quit): ", stdout);
-        fgets(msg, BUF_SIZE, stdin);
+//        fputs("Input message(Q to quit): ", stdout);
+//        fgets(msg, BUF_SIZE, stdin);
 
-        if(!strcmp(msg,"q\n") || !strcmp(msg,"Q\n"))
-            break;
+//        if(!strcmp(msg,"q\n") || !strcmp(msg,"Q\n"))
+//            break;
 
 #ifdef CAL
 	printf("Operand Count: ");
 	scanf("%d",&count);
+	if(count == -1)
+		break;
 	if(count < 0)
 	{
 		printf("Wrong Input\n");
 		continue;
 	}
-	for(i = 0; i< count+1; i++)
+	for(i = 0; i< count; i++)
 	{
 		printf("Operand %d: ",i+1);
 		scanf("%d",&operand);
 		//add to exception
 		msg[i]=(char)operand;
 	}
+	getchar();
 	printf("Operator: ");
 	scanf("%c",&operator);
 	//add to exception handling
@@ -80,7 +83,7 @@ int main(int argc, char *argv[])
 
         msg[recv_len]=0;
 #ifdef CAL
-        printf("Operation result: %d\n",atoi(msg));
+        printf("Operation result: %d\n",(int)msg[0]);
 #else
         printf("Message from server: %s", msg);
 #endif
