@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	int str_len, i;
 #ifdef CAL
 	int result=0;
-	int oper=0;
+	char oper=0;
 	int len=0;
 #endif
 	struct sockaddr_in serv_adr;
@@ -74,8 +74,29 @@ int main(int argc, char* argv[])
 	{
 	  result = (int)message[0];
 	  len = strlen(message);
-//	  printf("%d %d %d %d\n",result, (int)message[0],(int)message[1],(int)message[2]);
-	  switch(message[len])
+	  for(i=0;i<len;i++)
+	  {
+		  if(message[i] == '+')
+		  {
+			  oper = '+';
+			  len = i;
+			  break;
+		  }
+		  else if(message[i] =='-')
+		  {
+			  oper = '-';
+			  len = i;
+			  break;
+		  }
+		  else if(message[i] =='*')
+		  {
+			  oper = '*';
+			  len = i;
+			  break;
+		  }
+	  }
+
+	  switch(oper)
 	  {
 		case '+':
 		for(i = 1; i<len; i++)
