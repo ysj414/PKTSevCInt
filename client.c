@@ -1,12 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<unistd.h>
-#include<arpa/inet.h>
-#include<sys/socket.h>
-
+#include "lib/lib.h"
+#include "config.h"
 #define BUF_SIZE 1024
-#define CAL	1
 void error_handling(char *message);
 
 
@@ -47,7 +41,7 @@ int main(int argc, char *argv[])
 //        if(!strcmp(msg,"q\n") || !strcmp(msg,"Q\n"))
 //            break;
 
-#ifdef CAL
+#if defined (CAL)
 	printf("Operand Count: ");
 	scanf("%d",&count);
 	if(count == -1)
@@ -69,6 +63,11 @@ int main(int argc, char *argv[])
 	scanf("%c",&operator);
 	//add to exception handling
 	msg[count] = operator;
+
+#elif defined(THREEWAY_HANDSHAKE)
+	   for(i=0; i<3; i++)
+		threeway_handshake(&sock,msg);
+	   return 0;
 #endif
     str_len=write(sock, msg, strlen(msg));
 

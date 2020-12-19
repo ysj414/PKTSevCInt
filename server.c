@@ -1,13 +1,7 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<unistd.h>
-#include<arpa/inet.h>
-#include<sys/socket.h>
-#include<netinet/in.h>
+#include "lib/lib.h"
+#include "config.h"
 
 #define BUF_SIZE	1024
-#define CAL	1
 void error_handling(char *message);
 
 int main(int argc, char* argv[])
@@ -69,7 +63,7 @@ int main(int argc, char* argv[])
 	inet_ntop(AF_INET,&c_adr.sin_addr,buf,INET_ADDRSTRLEN);
 	printf("Client has Connected!!\n");
 	printf("Client Info : IP: %s\n",buf);
-#ifdef CAL
+#if defined(CAL)
 	while( (str_len = read(c_sock, message, BUF_SIZE)) != 0)
 	{
 	  result = (int)message[0];
@@ -118,6 +112,10 @@ int main(int argc, char* argv[])
 	  memset(message_to,0,sizeof(message_to));
 	  printf("The Result is %d.\n",result); 
 	}
+#elif defined(THREEWAY_HANDSHAKE)
+	 for(i = 0 ; i < 3; i++)
+	  threeway_handshake_server(sock, message, BUF_SIZE);
+	 return 0;
 #else
 	while( (str_len = read(c_sock, message, BUF_SIZE)) != 0 )
 	{
