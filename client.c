@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
 	char msg[BUF_SIZE];
 	int str_len, recv_len, recv_cnt;
 	struct sockaddr_in serv_adr;
+	int i=0;
 #ifdef CAL
 	int count=0;
-	int i=0;
 	int operand;
 	char operator;
 #endif

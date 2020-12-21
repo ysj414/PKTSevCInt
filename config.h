@@ -9,6 +9,9 @@
 /* define Three way handshake */
 #define THREEWAY_HANDSHAKE	1
 
+int threeway_handshake_send(int fd, char *msg, int count, int type);
+int threeway_handshake_recv(int fd, char *msg);
+
 
 
 

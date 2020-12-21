@@ -70,7 +70,7 @@ int threeway_handshake_send(int fd, char *msg, int count, int type)
 
 
 
-int threeway_handshake_resv(int fd, char *msg)
+int threeway_handshake_recv(int fd, char *msg)
 {
 	int size=strlen(msg);
 	int count = 0;
