@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
 	   for(i=0; i<3; i++)
 	   {
 		 threeway_handshake_recv(sock,msg);
+		 sleep(3);
 		 memset(msg,0,sizeof(msg));
 		 threeway_handshake_send(sock,msg,i,1);
 		 memset(msg,0,sizeof(msg));
