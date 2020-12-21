@@ -4,7 +4,7 @@
 
 
 /* define calculator module */
-#define CAL 0
+#undef CAL 
 
 /* define Three way handshake */
 #define THREEWAY_HANDSHAKE	1
