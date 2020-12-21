@@ -114,7 +114,11 @@ int main(int argc, char* argv[])
 	}
 #elif defined(THREEWAY_HANDSHAKE)
 	 for(i = 0 ; i < 3; i++)
-	  threeway_handshake_server(sock, message, BUF_SIZE);
+	 {
+	  threeway_handshake_send(c_sock, message, BUF_SIZE, 0);
+	  memset(message,0,sizeof(message));
+	  threeway_handshake_recv(c_sock, message, BUF_SIZE);
+	 }
 	 return 0;
 #else
 	while( (str_len = read(c_sock, message, BUF_SIZE)) != 0 )

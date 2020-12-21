@@ -4,14 +4,14 @@ CC=gcc
 server: server.o
 	rm -rf server 
 	${CC} -o server server.o 
-server.o: server.c 
+server.o: server.c threeway_handshake.c 
 	${CC} -c server.c threeway_handshake.c
 
-client: client.o
+client: client.o 
 	rm -rf client 
-	${CC} -o client client.o
+	${CC} -o client client.o 
 
-client.o: client.c 
+client.o: client.c threeway_handshake.c
 	${CC} -c client.c threeway_handshake.c
 
 

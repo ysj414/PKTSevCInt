@@ -66,7 +66,12 @@ int main(int argc, char *argv[])
 
 #elif defined(THREEWAY_HANDSHAKE)
 	   for(i=0; i<3; i++)
-		threeway_handshake(&sock,msg);
+	   {
+		 threeway_handshake_recv(sock,msg);
+		 memset(msg,0,sizeof(msg));
+		 threeway_handshake_send(sock,msg,i,1);
+		 memset(msg,0,sizeof(msg));
+	   }
 	   return 0;
 #endif
     str_len=write(sock, msg, strlen(msg));
