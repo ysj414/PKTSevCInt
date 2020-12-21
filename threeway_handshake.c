@@ -74,12 +74,8 @@ int threeway_handshake_recv(int fd, char *msg)
 {
 	int size=strlen(msg);
 	int count = 0;
-	while(count < size)
-	{
-		read(fd, msg,SIZE);
-		count+=SIZE;
-		printf("%s\n",msg); /* debug */
-	}
+
+	read(fd, msg,BUF_SIZE);
 	printf("Message: %s\n",msg);
 
 	return 0;
