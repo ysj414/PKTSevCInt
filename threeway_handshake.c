@@ -59,7 +59,11 @@ int threeway_handshake_send(int fd, char *msg, int count, int type)
 
 	size = strlen(buf);
 	
-	snprintf(msg,SIZE,"%d",size);  /* 0 1 2 3 */
+//	snprintf(msg,SIZE,"%d",size);  /* 0 1 2 3 */
+	msg[0] = '0';
+	msg[1] = '0';
+	msg[2] = '0';
+	msg[3] = 'L';
 	for(i = SIZE; i < SIZE + size; i++)
 		msg[i] = buf[i - SIZE];
 	
