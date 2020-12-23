@@ -57,17 +57,11 @@ int threeway_handshake_send(int fd, char *msg, int count, int type)
 
 	}
 
-	size = strlen(buf);
-	
-//	snprintf(msg,SIZE,"%d",size);  /* 0 1 2 3 */
-	msg[0] = '0';
-	msg[1] = '0';
-	msg[2] = '0';
-	msg[3] = 'L';
-	for(i = SIZE; i < SIZE + size; i++)
-		msg[i] = buf[i - SIZE];
-	
-	write(fd, msg, BUF_SIZE);
+	size = strlen(buf)+1;
+	for(i = 0; i < size; i++)
+		msg[i] = buf[i];
+	write(fd, (char *)(&size),SIZE);
+	write(fd, msg, sizeof(char)*size);
 
 	return 0;
 }
@@ -76,11 +70,14 @@ int threeway_handshake_send(int fd, char *msg, int count, int type)
 
 int threeway_handshake_recv(int fd, char *msg)
 {
-	int size=strlen(msg);
-	int count = 0;
+	int size=strlen(msg)+1;
 
-	read(fd, msg,BUF_SIZE);
-	printf("Message: %s\n",msg);
+	assert(size > 0);
+
+	read(fd, (char *)&size, SIZE);
+    read(fd, msg,sizeof(char)*size);
+	printf("%4d",size);
+	puts(msg);
 
 	return 0;
 }

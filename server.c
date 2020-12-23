@@ -116,9 +116,9 @@ int main(int argc, char* argv[])
 	 for(i = 0 ; i < 3; i++)
 	 {
 	  threeway_handshake_send(c_sock, message, i, 0);
-	  sleep(3);
 	  memset(message,0,sizeof(message));
 	  threeway_handshake_recv(c_sock, message);
+	  memset(message,0,sizeof(message));
 	 }
 	 return 0;
 #else
