@@ -17,6 +17,10 @@ int main(int argc, char *argv[])
 	int operand;
 	char operator;
 #endif
+
+#ifdef FILE_TRANSFER
+	int f_name=0;
+#endif
 	
 	sock = socket(PF_INET, SOCK_STREAM, 0);
 	if(sock == -1)
@@ -72,6 +76,17 @@ int main(int argc, char *argv[])
 		 threeway_handshake_send(sock,msg,i,1);
 		 memset(msg,0,sizeof(msg));
 	   }
+//	   close(sock);
+	   return 0;
+#elif defined(FILE_TRANSFER)
+	   f_name = file_name_get();
+	   if(f_name == -1)
+		   return 0;
+	   else
+	   	   file_name_send(sock,msg);
+	   file_transfer_recv(sock,msg);
+
+	   close(sock);
 	   return 0;
 #endif
     str_len=write(sock, msg, strlen(msg));

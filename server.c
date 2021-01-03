@@ -16,6 +16,9 @@ int main(int argc, char* argv[])
 	char oper=0;
 	int len=0;
 #endif
+#ifdef FILE_TRANSFER
+	int f_check=0;
+#endif
 	struct sockaddr_in serv_adr;
 	struct sockaddr_in c_adr;
 	socklen_t c_adr_sz;
@@ -120,6 +123,15 @@ int main(int argc, char* argv[])
 	  threeway_handshake_recv(c_sock, message);
 	  memset(message,0,sizeof(message));
 	 }
+	 return 0;
+#elif defined(FILE_TRANSFER)
+	 f_check = file_name_recv(c_sock, message);
+	 if(f_check == -1)
+		 file_transfer_no_send(c_sock, message);
+	 else
+		 file_transfer_send(c_sock,message);
+	 close(c_sock);
+
 	 return 0;
 #else
 	while( (str_len = read(c_sock, message, BUF_SIZE)) != 0 )
