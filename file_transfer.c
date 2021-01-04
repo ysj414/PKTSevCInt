@@ -4,6 +4,7 @@
 #define BUF_SIZE 100
 #define SOCK_SIZE	4
 #define READ_MODE	"r"
+#define WRITE_MODE	"w"
 
 /* 0 is OK
   -1 is NOT OK
@@ -15,9 +16,10 @@ int file_name_get()
 {
 	int len = 0;
 	int ret = 0;
-	printf("Enter a file name(max:100):\n");
+	printf("Enter a file name(max:100):");
 	fgets(name,BUF_SIZE,stdin);
 	len = strlen(name);
+	name[len-1]='\0';
 	if(len > 101)
 	{
 		printf("Input File name is too Large!\n");
@@ -30,29 +32,19 @@ int file_name_get()
 int file_name_send(int fd, char *buf)
 {
 	int len = strlen(name);
-	int count = 0;
 
 	strcpy(buf,name);
-
-	while(count < len)
-	{
-		count+=write(fd,buf, SOCK_SIZE);
-	}
-	
+	write(fd,buf, BUF_SIZE);
+//	printf("file name send %s\n",buf);
     return 0;
 }
 
 int file_name_recv(int fd, char *buf)
 {
-	int count = 0;
 	int ret = 0;
-	int len = 0;
 	
-	len = strlen(buf);
-	while(count < len)
-	{
-		count += read(fd,buf,SOCK_SIZE);
-	}
+	read(fd,buf,BUF_SIZE);
+//	printf("file name read:%s\n",buf);
 	ret = access(buf,F_OK);
 	return ret;
 }
@@ -60,11 +52,24 @@ int file_name_recv(int fd, char *buf)
 void file_transfer_send(int fd, char *buf)
 {
 	FILE *fp = NULL;
-
+	int count =0;
+	int len=0;
+	printf("name:%s\n",buf);
+	fp = fopen(buf,READ_MODE);
+	if(fp == NULL)
+		return;
+	printf("file read\n");
 	while(!feof(fp))
 	{
 		fgets(buf,BUF_SIZE,fp);
-		write(fd, buf, BUF_SIZE);
+		printf("%s",buf);
+		len = strlen(buf);
+		while(count<len)
+		{
+			count+=write(fd, buf, BUF_SIZE);
+			printf("count:%d content:%c\n",count,buf[0]);
+		}
+		count = 0;
 		memset(buf,0,sizeof(buf)/sizeof(char));
 	}
 	fclose(fp);
@@ -72,7 +77,8 @@ void file_transfer_send(int fd, char *buf)
 
 void file_transfer_no_send(int fd, char* buf)
 {
-	buf[0]='0'; // no file
+	printf("no send\n");
+	buf[0]='0';
 	write(fd,buf,SOCK_SIZE);
 }
 
@@ -80,23 +86,22 @@ int file_transfer_recv(int fd, char* buf)
 {
 	FILE *fp = NULL;
 	int count =0;
-	fp = fopen(name,"w");
+
+	fp = fopen(name,WRITE_MODE);
 
 	if(fp == NULL)
 		return -1;
 
-	while(!feof(fp))
+	while(1)
 	{
-		read(fd, buf, BUF_SIZE);
+		count=0;
+		count+=read(fd, buf, BUF_SIZE);
+		if(count == 0 || buf[0] =='0') /* There is a problem when file contents starts '0' */
+			break;
 		fputs(buf,fp);
-		memset(buf,0,sizeof(buf)/sizeof(char));
+//		printf("read: %d, %s\n",count,buf);
 	}
 	fclose(fp);
 
-	if(buf[0] == '0')
-	{
-		printf("There is no file.\n");
-		return -1;
-	}
 	return 0;
 }

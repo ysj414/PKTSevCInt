@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
 		   return 0;
 	   else
 	   	   file_name_send(sock,msg);
+	   memset(msg,0,sizeof(msg)/sizeof(char));
 	   file_transfer_recv(sock,msg);
 
 	   close(sock);
