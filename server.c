@@ -21,14 +21,16 @@ int main(int argc, char* argv[])
 #endif
 	struct sockaddr_in serv_adr;
 	struct sockaddr_in c_adr;
-	socklen_t c_adr_sz;
-
+	socklen_t c_adr_sz, optlen;
+	
+/*socket reuse */
+	int option;
 
 	serv_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if(serv_sock == -1)
 		error_handling("socket init error\n");
 	printf("socket create succuess\n");
-
+	
 /* Server init */	
 	memset(&serv_adr, 0, sizeof(serv_adr));
 	serv_adr.sin_family = AF_INET;
@@ -39,7 +41,10 @@ int main(int argc, char* argv[])
 	printf("Hello! I'am Server\n");
 	if(bind(serv_sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1 )
 		error_handling("bind() error\n");
-
+/*socket reuse */
+	optlen = sizeof(option);
+	option = 1;
+	setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, (void *)&option, optlen);
 /* Print Server Information.
  * Server Port print correctly but IP address can't print.
  * Later, this part will be fixed.
